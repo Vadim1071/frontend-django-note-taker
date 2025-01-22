@@ -1,7 +1,8 @@
-export default function Layout({ children }) {
+'use client'
+export default function RootLayout({ children }) {
   return (
-    <div>
-      <main>{children}</main>
-    </div>
+    <html lang="en">
+      <body>{children}</body>
+    </html>
   );
 }

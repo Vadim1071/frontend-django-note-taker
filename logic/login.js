@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from './layout';
-import { login, setAuthToken } from './api';
+import { login, setAuthToken } from './api/api';
 
 export default function Login() {
   const [username, setUsername] = useState('');
@@ -16,7 +15,7 @@ export default function Login() {
   };
 
   return (
-    <Layout>
+    <>
       <h1>Login</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -33,6 +32,6 @@ export default function Login() {
         />
         <button type="submit">Login</button>
       </form>
-    </Layout>
+    </>
   );
 }

@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import Layout from './layout';
-import { createNote } from './api';
+import { createNote } from './api/api';
 
 export default function CreateNote() {
   const [title, setTitle] = useState('');
@@ -15,7 +14,7 @@ export default function CreateNote() {
   };
 
   return (
-    <Layout>
+    <>
       <h1>Create Note</h1>
       <form onSubmit={handleSubmit}>
         <input
@@ -31,6 +30,6 @@ export default function CreateNote() {
         />
         <button type="submit">Create</button>
       </form>
-    </Layout>
+    </>
   );
 }
