@@ -7,9 +7,12 @@ const api = axios.create({
 
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers['Authorization'] = `Bearer ${token}`;
+    // Проверяем, доступен ли localStorage
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -32,14 +35,22 @@ api.interceptors.response.use(
 
 // Функция для установки токена аутентификации в заголовках
 export const setAuthToken = (token) => {
-  if (token) {
-    localStorage.setItem('token', token);
-  } else {
-    localStorage.removeItem('token');
+  if (typeof window !== 'undefined') {
+    if (token) {
+      localStorage.setItem('token', token);
+    } else {
+      localStorage.removeItem('token');
+    }
   }
 };
 
-export const isAuthenticated = () => localStorage.getItem('token') !== null;
+// Функция для проверки аутентификации
+export const isAuthenticated = () => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem('token') !== null;
+  }
+  return false;
+};
 
 // Функция для входа в систему
 export const login = async (username, password) => {
