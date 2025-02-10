@@ -45,11 +45,8 @@ export const setAuthToken = (token) => {
 };
 
 // Функция для проверки аутентификации
-export const isAuthenticated = () => {
-  if (typeof window !== 'undefined') {
-    return localStorage.getItem('token') !== null;
-  }
-  return false;
+export const isAuthenticated = () => {  
+  return localStorage.getItem('token') !== null;
 };
 
 // Функция для входа в систему

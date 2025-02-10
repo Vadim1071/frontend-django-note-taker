@@ -4,15 +4,16 @@ import { getTags } from '../logic/api/api'; // Исправленный импо
 
 const TagList = () => {
   const [tags, setTags] = useState([]);
+  console.log(tags)
 
   useEffect(() => {
     const fetchTags = async () => {
       const data = await getTags();
-      setTags(data);
+      setTags(data.results);
     };
     fetchTags();
   }, []);
-
+console.log(tags)
   return (
     <div>
       <h2>Tags</h2>
