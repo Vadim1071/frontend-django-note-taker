@@ -69,6 +69,24 @@ export const getNotes = async () => {
   }
 };
 
+export const getNote = async (id) => {
+  try {
+    const response = await api.get(`notes/${id}/`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to fetch note');
+  }
+};
+
+export const updateNote = async (note) => {
+  try {
+    const response = await api.put(`notes/${note.id}/`, note);
+    return response.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.message || 'Failed to update note');
+  }
+}
+
 // Функция для создания заметки
 export const createNote = async (note) => {
   try {
