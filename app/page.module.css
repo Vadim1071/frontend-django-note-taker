@@ -1,9 +1,9 @@
 /* page.module.css */
-.container {
+/* .container {
   padding: 1.5rem;
   background-color: #f3f4f6;
   min-height: 100vh;
-}
+} */
 
 .content {
   display: grid;
@@ -23,4 +23,13 @@
   padding: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.container {
+  padding: 1.5rem;
+  min-height: 100vh; /* Занимает всю высоту viewport */
+  background-image: url('/images/6449413867.jpg'); /* Путь к изображению */
+  background-size: cover; /* Масштабирует изображение, чтобы оно покрывало весь контейнер */
+  background-position: center; /* Центрирует изображение */
+  background-repeat: no-repeat; /* Изображение не повторяется */
 }
