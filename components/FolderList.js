@@ -23,10 +23,11 @@ const FolderList = () => {
   };
 
   const addFolder = () => {
-    if (newFolderName.trim()) {
+    const trimmedName = newFolderName.trim();
+    if (trimmed) {
       const newFolder = {
         id: Date.now(),
-        name: newFolderName,
+        name: trimmed,
         notes: [],
       };
       setFolders([...folders, newFolder]);

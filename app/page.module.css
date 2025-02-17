@@ -26,7 +26,6 @@
 }
 
 .container {
-  padding: 1.5rem;
   min-height: 100vh; /* Занимает всю высоту viewport */
   background-image: url('/images/6449413867.jpg'); /* Путь к изображению */
   background-size: cover; /* Масштабирует изображение, чтобы оно покрывало весь контейнер */
