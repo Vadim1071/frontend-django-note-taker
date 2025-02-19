@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import TagSelector from '../TagSelector'; // Компонент для выбора тегов
 import { createNote } from '../../logic/api/api';
+import styles from './CreateNoteForm.module.css'; // Импортируем стили
 
 const CreateNoteForm = () => {
   const [title, setTitle] = useState('');
@@ -12,15 +13,22 @@ const CreateNoteForm = () => {
     { id: 2, title: 'Личное' },
     { id: 3, title: 'Срочно' },
   ]);
+  const [error, setError] = useState(''); // Состояние для ошибки
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const newNote = { title, content, tags: selectedTags };
-    await createNote(newNote);
-    alert('Заметка создана!');
-    setTitle('');
-    setContent('');
-    setSelectedTags([]);
+
+    try {
+      await createNote(newNote);
+      alert('Заметка создана!');
+      setTitle('');
+      setContent('');
+      setSelectedTags([]);
+    } catch (err) {
+      setError('Не удалось создать заметку. Пожалуйста, попробуйте снова.');
+      console.error('Ошибка при создании заметки:', err);
+    }
   };
 
   const handleTagAdd = (tag) => {
@@ -34,8 +42,9 @@ const CreateNoteForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ maxWidth: '600px', margin: '0 auto', padding: '1rem' }}>
+    <form onSubmit={handleSubmit} className={styles.form}>
       <h2>Создать заметку</h2>
+      {error && <p className={styles.error}>{error}</p>} {/* Отображаем ошибку */}
       <div>
         <label>Заголовок:</label>
         <input
@@ -43,7 +52,7 @@ const CreateNoteForm = () => {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem', border: '1px solid #d1d5db', borderRadius: '0.25rem' }}
+          className={styles.input}
         />
       </div>
       <div>
@@ -52,7 +61,7 @@ const CreateNoteForm = () => {
           value={content}
           onChange={(e) => setContent(e.target.value)}
           required
-          style={{ width: '100%', padding: '0.5rem', marginBottom: '1rem', border: '1px solid #d1d5db', borderRadius: '0.25rem' }}
+          className={styles.textarea}
         />
       </div>
       <div>
@@ -63,7 +72,7 @@ const CreateNoteForm = () => {
           onNewTagCreate={handleNewTagCreate}
         />
       </div>
-      <button type="submit" style={{ marginTop: '1rem', padding: '0.5rem 1rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.25rem' }}>
+      <button type="submit" className={styles.button}>
         Сохранить
       </button>
     </form>
