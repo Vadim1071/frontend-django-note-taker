@@ -1,0 +1,76 @@
+/* RegisterForm.module.css */
+
+/* Общий контейнер формы */
+.formContainer {
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Заголовок формы */
+  .formTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  /* Сообщение об ошибке */
+  .errorMessage {
+    color: #ef4444;
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  /* Поле ввода */
+  .inputField {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+  }
+  
+  .inputField:focus {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
+  }
+  
+  /* Метка поля ввода */
+  .label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-size: 0.875rem;
+    color: #374151;
+  }
+  
+  /* Кнопка отправки */
+  .submitButton {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #3b82f6;
+    color: #ffffff;
+    border: none;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .submitButton:hover {
+    background-color: #2563eb;
+  }
+  
+  /* Выравнивание элементов */
+  .formGroup {
+    margin-bottom: 1.5rem;
+  }
