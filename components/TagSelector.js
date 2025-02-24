@@ -1,45 +1,36 @@
-'use client';
-import React, { useState } from 'react';
-import CreateTagForm from './CreateTagForm/CreateTagForm'; // Компонент для создания нового тега
+import React, { useState } from 'react'; // Импортируем useState
 
-const TagSelector = ({ tags, onTagAdd, onNewTagCreate }) => {
-  const [showCreateTagForm, setShowCreateTagForm] = useState(false);
+const TagSelector = ({ tags = [], onTagAdd, onNewTagCreate }) => {
+  const [newTag, setNewTag] = useState(''); // Используем useState
 
   const handleAddTag = (tag) => {
-    onTagAdd(tag); // Добавляем тег к заметке
+    onTagAdd(tag);
   };
 
-  const handleCreateNewTag = (newTag) => {
-    onNewTagCreate(newTag); // Создаем новый тег
-    setShowCreateTagForm(false); // Закрываем форму
+  const handleCreateTag = () => {
+    if (newTag.trim()) {
+      onNewTagCreate({ title: newTag });
+      setNewTag('');
+    }
   };
 
   return (
     <div>
-      <div>
-        {tags.map((tag) => (
-          <button
-            key={tag.id}
-            onClick={() => handleAddTag(tag)}
-            style={{ margin: '0.25rem', padding: '0.25rem 0.5rem', background: '#e2e8f0', border: 'none', borderRadius: '0.25rem' }}
-          >
-            {tag.title}
-          </button>
+      <select onChange={(e) => handleAddTag(tags.find(tag => tag.id === parseInt(e.target.value)))}>
+        <option value="">Выберите тег</option>
+        {Array.isArray(tags) && tags.map(tag => (
+          <option key={tag.id} value={tag.id}>{tag.title}</option>
         ))}
-        <button
-          onClick={() => setShowCreateTagForm(true)}
-          style={{ margin: '0.25rem', padding: '0.25rem 0.5rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.25rem' }}
-        >
-          +
-        </button>
-      </div>
-
-      {showCreateTagForm && (
-        <CreateTagForm
-          onSubmit={handleCreateNewTag}
-          onCancel={() => setShowCreateTagForm(false)}
-        />
-      )}
+      </select>
+      <input
+        type="text"
+        value={newTag}
+        onChange={(e) => setNewTag(e.target.value)}
+        placeholder="Новый тег"
+      />
+      <button type="button" onClick={handleCreateTag}>
+        +
+      </button>
     </div>
   );
 };

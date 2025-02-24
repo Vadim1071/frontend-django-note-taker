@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-// Создаем экземпляр axios с базовым URL
+const isClient = () => typeof window !== 'undefined';
+
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api/v1/', // backend uri
+  baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1/',
 });
 
 api.interceptors.request.use(
   (config) => {
-    // Проверяем, доступен ли localStorage
-    if (typeof window !== 'undefined') {
+    if (isClient()) {
       const token = localStorage.getItem('token');
       if (token) {
         config.headers['Authorization'] = `Bearer ${token}`;
@@ -26,16 +26,22 @@ api.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response?.status === 401) {
       setAuthToken(null);
+      if (isClient()) {
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }
 );
 
-// Функция для установки токена аутентификации в заголовках
+const handleError = (error, defaultMessage) => {
+  throw new Error(error.response?.data?.message || defaultMessage);
+};
+
 export const setAuthToken = (token) => {
-  if (typeof window !== 'undefined') {
+  if (isClient()) {
     if (token) {
       localStorage.setItem('token', token);
     } else {
@@ -44,28 +50,25 @@ export const setAuthToken = (token) => {
   }
 };
 
-// Функция для проверки аутентификации
-export const isAuthenticated = () => {  
-  return localStorage.getItem('token') !== null;
+export const isAuthenticated = () => {
+  return isClient() && localStorage.getItem('token') !== null;
 };
 
-// Функция для входа в систему
 export const login = async (username, password) => {
   try {
     const response = await api.post('token/', { username, password });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Login failed');
+    handleError(error, 'Login failed');
   }
 };
 
-// Функция для получения списка заметок
 export const getNotes = async () => {
   try {
     const response = await api.get('notes/');
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch notes');
+    handleError(error, 'Failed to fetch notes');
   }
 };
 
@@ -74,7 +77,7 @@ export const getNote = async (id) => {
     const response = await api.get(`notes/${id}/`);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch note');
+    handleError(error, 'Failed to fetch note');
   }
 };
 
@@ -83,72 +86,65 @@ export const updateNote = async (note) => {
     const response = await api.put(`notes/${note.id}/`, note);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to update note');
+    handleError(error, 'Failed to update note');
   }
-}
+};
 
-// Функция для создания заметки
 export const createNote = async (note) => {
   try {
     const response = await api.post('notes/', note);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to create note');
+    handleError(error, 'Failed to create note');
   }
 };
 
-// Функция для получения списка тегов
 export const getTags = async () => {
   try {
     const response = await api.get('tags/');
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch tags');
+    handleError(error, 'Failed to fetch tags');
   }
 };
 
-// Функция для создания тега
 export const createTag = async (tag) => {
   try {
     const response = await api.post('tags/', tag);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to create tag');
+    handleError(error, 'Failed to create tag');
   }
 };
 
-// Функция для получения списка папок
 export const getFolders = async () => {
   try {
     const response = await api.get('folders/');
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to fetch folders');
+    handleError(error, 'Failed to fetch folders');
   }
 };
 
-// Функция для создания папки
 export const createFolder = async (folder) => {
   try {
     const response = await api.post('folders/', folder);
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Failed to create folder');
+    handleError(error, 'Failed to create folder');
   }
 };
 
-// Функция для регистрации пользователя
 export const register = async (username, password, email = '') => {
   try {
     const response = await api.post('register/', { username, password, email });
     return response.data;
   } catch (error) {
-    throw new Error(error.response?.data?.message || 'Registration failed');
+    handleError(error, 'Registration failed');
   }
 };
 
-// Экспортируем все функции
-export default {
+export {
   setAuthToken,
   login,
   getNotes,

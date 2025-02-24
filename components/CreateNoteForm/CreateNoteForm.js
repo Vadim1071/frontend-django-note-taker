@@ -1,23 +1,42 @@
 'use client';
-import React, { useState } from 'react';
-import TagSelector from '../TagSelector'; // Компонент для выбора тегов
-import { createNote } from '../../logic/api/api';
-import styles from './CreateNoteForm.module.css'; // Импортируем стили
+import React, { useState, useEffect } from 'react';
+import TagSelector from '../TagSelector';
+import { createNote, getTags, createTag } from '../../logic/api/api';
+import styles from './CreateNoteForm.module.css';
 
 const CreateNoteForm = () => {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selectedTags, setSelectedTags] = useState([]);
-  const [tags, setTags] = useState([
-    { id: 1, title: 'Работа' },
-    { id: 2, title: 'Личное' },
-    { id: 3, title: 'Срочно' },
-  ]);
-  const [error, setError] = useState(''); // Состояние для ошибки
+  const [tags, setTags] = useState([]);
+  const [error, setError] = useState('');
+
+  // Загружаем теги с сервера
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const response = await getTags();
+        if (Array.isArray(response)) {
+          setTags(response);
+        } else {
+          console.error('Ожидался массив тегов, но получено:', response);
+          setTags([]);
+        }
+      } catch (error) {
+        console.error('Ошибка при загрузке тегов:', error);
+        setTags([]);
+      }
+    };
+
+    fetchTags();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const newNote = { title, content, tags: selectedTags };
+    const tagIds = selectedTags.map(tag => tag.id);
+    const newNote = { title, content, tags: tagIds };
+
+    console.log('Отправляемые данные:', newNote);
 
     try {
       await createNote(newNote);
@@ -32,19 +51,25 @@ const CreateNoteForm = () => {
   };
 
   const handleTagAdd = (tag) => {
-    setSelectedTags([...selectedTags, tag]); // Добавляем тег к выбранным
+    setSelectedTags((prevTags) => [...prevTags, tag]);
   };
 
-  const handleNewTagCreate = (newTag) => {
-    const tagWithId = { ...newTag, id: Date.now() }; // Генерируем ID для нового тега
-    setTags([...tags, tagWithId]); // Добавляем новый тег в список
-    setSelectedTags([...selectedTags, tagWithId]); // Добавляем новый тег к выбранным
+  const handleNewTagCreate = async (newTag) => {
+    try {
+      const response = await createTag(newTag);
+      const createdTag = response;
+
+      setTags((prevTags) => [...prevTags, createdTag]);
+      setSelectedTags((prevSelectedTags) => [...prevSelectedTags, createdTag]);
+    } catch (error) {
+      console.error('Ошибка при создании тега:', error);
+    }
   };
 
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <h2>Создать заметку</h2>
-      {error && <p className={styles.error}>{error}</p>} {/* Отображаем ошибку */}
+      {error && <p className={styles.error}>{error}</p>}
       <div>
         <label>Заголовок:</label>
         <input
@@ -71,6 +96,12 @@ const CreateNoteForm = () => {
           onTagAdd={handleTagAdd}
           onNewTagCreate={handleNewTagCreate}
         />
+        <div>
+          <strong>Выбранные теги:</strong>
+          {selectedTags.map(tag => (
+            <span key={tag.id} style={{ marginRight: '0.5rem' }}>{tag.title}</span>
+          ))}
+        </div>
       </div>
       <button type="submit" className={styles.button}>
         Сохранить

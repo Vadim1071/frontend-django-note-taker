@@ -1,34 +1,139 @@
-/* page.module.css */
-/* .container {
-  padding: 1.5rem;
-  background-color: #f3f4f6;
-  min-height: 100vh;
-} */
-
-.content {
-  display: grid;
-  grid-template-columns: 250px 1fr; /* Сайдбар и основное содержимое */
-  gap: 1.5rem; /* Отступ между колонками */
+/* app/page.module.css */
+:root {
+  --background-color: #1f2937;
+  --text-color: #ffffff;
+  --primary-color: #3b82f6;
+  --secondary-color: #facc15;
+  --danger-color: #ef4444;
+  --success-color: #22c55e;
+  --border-color: #4b5563;
+  --shadow-color: rgba(0, 0, 0, 0.2);
 }
 
-.sidebar {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-.main {
-  background-color: #ffffff;
-  padding: 1.5rem;
-  border-radius: 0.5rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
 .container {
-  min-height: 100vh; /* Занимает всю высоту viewport */
-  background-image: url('/images/6449413867.jpg'); /* Путь к изображению */
-  background-size: cover; /* Масштабирует изображение, чтобы оно покрывало весь контейнер */
-  background-position: center; /* Центрирует изображение */
-  background-repeat: no-repeat; /* Изображение не повторяется */
+  display: flex;
+  justify-content: flex-start; /* Выравниваем по левому краю */
+  align-items: flex-start; /* Выравниваем по верхнему краю */
+  min-height: 100vh;
+  padding: 2rem;
+}
+
+.content {
+  display: flex;
+  width: 100%;
+  max-width: 1200px;
+  background-color: #111827;
+  box-shadow: 0 0 10px var(--shadow-color);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 300px; /* Расширяем сайдбар */
+  background-color: #111827;
+  padding: 1rem;
+  border-right: 1px solid var(--border-color);
+}
+
+.main {
+  flex: 1;
+  padding: 1rem;
+}
+
+.folder {
+  margin-bottom: 0.5rem;
+}
+
+.folderHeader {
+  cursor: pointer;
+  font-weight: bold;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+.folderHeader:hover {
+  background-color: #374151;
+}
+
+.folderActions {
+  margin-left: 1rem;
+  display: flex;
+  gap: 0.5rem; /* Добавляем отступ между кнопками */
+}
+
+.note {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem;
+  background-color: #1f2937;
+  border-radius: 0.25rem;
+  border: 1px solid var(--border-color);
+}
+
+.note span {
+  flex: 1;
+  margin-right: 0.5rem;
+}
+
+.noteActions {
+  display: flex;
+  gap: 0.5rem; /* Добавляем отступ между кнопками */
+}
+
+.input {
+  width: 100%;
+  padding: 0.5rem;
+  borderRadius: 0.25rem;
+  border: 1px solid var(--border-color);
+  fontSize: 0.875rem;
+  marginBottom: 0.5rem; /* Добавляем отступ под полем ввода */
+  background-color: #374151;
+  color: var(--text-color);
+}
+
+.button {
+  padding: 0.25rem 0.75rem;
+  background: var(--danger-color);
+  color: var(--text-color);
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  boxShadow: 0 1px 2px 0 var(--shadow-color);
+  margin-right: 0.5rem; /* Добавляем отступ справа между кнопками */
+}
+
+.button.edit {
+  background: var(--secondary-color);
+  color: #000; /* Черный текст для контрастности */
+}
+
+.button.save {
+  background: var(--success-color);
+  color: #000; /* Черный текст для контрастности */
+}
+
+.button.add {
+  background: var(--primary-color);
+  color: #000; /* Черный текст для контрастности */
+}
+
+.folderListTitle {
+  margin-bottom: 1rem;
+}
+
+.noteListTitle {
+  margin-bottom: 1rem;
 }

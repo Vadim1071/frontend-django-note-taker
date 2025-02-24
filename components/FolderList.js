@@ -1,6 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useNotes } from '@/context/NotesContext';
+import styles from '@/app/page.module.css'; // Импорт стилей
 
 const FolderList = () => {
   const {
@@ -26,11 +27,12 @@ const FolderList = () => {
     startEditingFolder,
     startEditingNote,
     saveEditing,
+    notes,
   } = useNotes();
 
   return (
-    <div>
-      <h2>Папки</h2>
+    <div className={styles.sidebar}>
+      <h2 className={styles.folderListTitle}>Папки</h2>
 
       {/* Форма для добавления новой папки */}
       <input
@@ -38,55 +40,28 @@ const FolderList = () => {
         value={newFolderName}
         onChange={(e) => setNewFolderName(e.target.value)}
         placeholder="Название папки"
-        style={{
-          width: '100%',
-          padding: '0.5rem',
-          borderRadius: '0.25rem',
-          border: '1px solid #d1d5db',
-          fontSize: '0.875rem',
-        }}
+        className={styles.input}
       />
       <button
         onClick={addFolder}
-        style={{
-          width: '100%',
-          padding: '0.5rem',
-          background: '#3b82f6',
-          color: '#fff',
-          border: 'none',
-          borderRadius: '0.25rem',
-          cursor: 'pointer',
-          fontSize: '0.875rem',
-          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        }}
+        className={`${styles.button} ${styles.add}`}
       >
         Добавить папку
       </button>
 
       {/* Список папок */}
       {folders.map((folder) => (
-        <div key={folder.id} style={{ margin: '0.5rem 0' }}>
+        <div key={folder.id} className={styles.folder}>
           <div
             onClick={() => toggleFolder(folder.id)}
-            style={{
-              cursor: 'pointer',
-              fontWeight: 'bold',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-            }}
+            className={styles.folderHeader}
           >
             {editingFolderId === folder.id ? (
               <input
                 type="text"
                 value={editedName}
                 onChange={(e) => setEditedName(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '0.25rem',
-                  borderRadius: '0.25rem',
-                  border: '1px solid #d1d5db',
-                }}
+                className={styles.input}
               />
             ) : (
               <span>{folder.name}</span>
@@ -94,52 +69,25 @@ const FolderList = () => {
             <span>{` (${folder.notes.length})`}</span>
           </div>
 
-          <div style={{ marginLeft: '1rem' }}>
+          <div className={styles.folderActions}>
             {editingFolderId === folder.id ? (
               <button
                 onClick={() => saveEditing(folder.id)}
-                style={{
-                  padding: '0.25rem 0.75rem',
-                  background: '#22c55e',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '0.25rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                }}
+                className={`${styles.button} ${styles.save}`}
               >
                 Сохранить
               </button>
             ) : (
               <button
                 onClick={() => startEditingFolder(folder.id, folder.name)}
-                style={{
-                  padding: '0.25rem 0.75rem',
-                  background: '#facc15',
-                  color: '#000',
-                  border: 'none',
-                  borderRadius: '0.25rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                }}
+                className={`${styles.button} ${styles.edit}`}
               >
                 Редактировать
               </button>
             )}
             <button
               onClick={() => deleteFolder(folder.id)}
-              style={{
-                padding: '0.25rem 0.75rem',
-                background: '#ef4444',
-                color: '#fff',
-                border: 'none',
-                borderRadius: '0.25rem',
-                cursor: 'pointer',
-                fontSize: '0.875rem',
-                boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-              }}
+              className={styles.button}
             >
               Удалить
             </button>
@@ -153,27 +101,11 @@ const FolderList = () => {
                 value={newNoteTitle}
                 onChange={(e) => setNewNoteTitle(e.target.value)}
                 placeholder="Название заметки"
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  borderRadius: '0.25rem',
-                  border: '1px solid #d1d5db',
-                  fontSize: '0.875rem',
-                }}
+                className={styles.input}
               />
               <button
                 onClick={() => addNoteToFolder(folder.id)}
-                style={{
-                  width: '100%',
-                  padding: '0.5rem',
-                  background: '#3b82f6',
-                  color: '#fff',
-                  border: 'none',
-                  borderRadius: '0.25rem',
-                  cursor: 'pointer',
-                  fontSize: '0.875rem',
-                  boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                }}
+                className={styles.button}
               >
                 Добавить заметку
               </button>
@@ -183,71 +115,41 @@ const FolderList = () => {
                 const note = notes.find((n) => n.id === noteId);
                 if (!note) return null;
                 return (
-                  <div key={note.id} className="note">
+                  <div key={note.id} className={styles.note}>
                     {editingNoteId === note.id ? (
                       <input
                         type="text"
                         value={editedName}
                         onChange={(e) => setEditedName(e.target.value)}
-                        style={{
-                          width: '70%',
-                          padding: '0.25rem',
-                          borderRadius: '0.25rem',
-                          border: '1px solid #d1d5db',
-                        }}
+                        className={styles.input}
                       />
                     ) : (
                       <span>{note.title}</span>
                     )}
 
-                    {editingNoteId === note.id ? (
+                    <div className={styles.noteActions}>
+                      {editingNoteId === note.id ? (
+                        <button
+                          onClick={() => saveEditing(folder.id, note.id)}
+                          className={`${styles.button} ${styles.save}`}
+                        >
+                          Сохранить
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => startEditingNote(note.id, note.title)}
+                          className={`${styles.button} ${styles.edit}`}
+                        >
+                          Редактировать
+                        </button>
+                      )}
                       <button
-                        onClick={() => saveEditing(folder.id, note.id)}
-                        style={{
-                          padding: '0.25rem 0.75rem',
-                          background: '#22c55e',
-                          color: '#fff',
-                          border: 'none',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer',
-                          fontSize: '0.875rem',
-                          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                        }}
+                        onClick={() => deleteNote(note.id)}
+                        className={styles.button}
                       >
-                        Сохранить
+                        Удалить
                       </button>
-                    ) : (
-                      <button
-                        onClick={() => startEditingNote(note.id, note.title)}
-                        style={{
-                          padding: '0.25rem 0.75rem',
-                          background: '#facc15',
-                          color: '#000',
-                          border: 'none',
-                          borderRadius: '0.25rem',
-                          cursor: 'pointer',
-                          fontSize: '0.875rem',
-                          boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                        }}
-                      >
-                        Редактировать
-                      </button>
-                    )}
-                    <button
-                      onClick={() => deleteNote(note.id)}
-                      style={{
-                        padding: '0.25rem 0.75rem',
-                        background: '#ef4444',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '0.25rem',
-                        cursor: 'pointer',
-                        fontSize: '0.875rem',
-                        boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-                      }}
-                    >
-                      Удалить
-                    </button>
+                    </div>
                   </div>
                 );
               })}

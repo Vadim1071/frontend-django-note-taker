@@ -55,6 +55,11 @@ export const NotesProvider = ({ children }) => {
         folderId: folderId,
       };
       setNotes([...notes, newNote]);
+      // Обновляем массив notes в соответствующей папке
+      const updatedFolders = folders.map((folder) =>
+        folder.id === folderId ? { ...folder, notes: [...folder.notes, newNote.id] } : folder
+      );
+      setFolders(updatedFolders);
       setNewNoteTitle('');
     }
   };
@@ -68,7 +73,12 @@ export const NotesProvider = ({ children }) => {
 
   const deleteNote = (noteId) => {
     const updatedNotes = notes.filter((note) => note.id !== noteId);
+    const updatedFolders = folders.map((folder) => ({
+      ...folder,
+      notes: folder.notes.filter((id) => id !== noteId),
+    }));
     setNotes(updatedNotes);
+    setFolders(updatedFolders);
   };
 
   const startEditingFolder = (folderId, currentName) => {
