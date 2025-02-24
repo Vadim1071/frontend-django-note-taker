@@ -16,6 +16,8 @@ const CreateNoteForm = () => {
     const fetchTags = async () => {
       try {
         const response = await getTags();
+        console.log('Ответ от getTags:', response);
+
         if (Array.isArray(response)) {
           setTags(response);
         } else {
@@ -63,6 +65,7 @@ const CreateNoteForm = () => {
       setSelectedTags((prevSelectedTags) => [...prevSelectedTags, createdTag]);
     } catch (error) {
       console.error('Ошибка при создании тега:', error);
+      setError('Не удалось создать тег. Пожалуйста, попробуйте снова.');
     }
   };
 
@@ -99,7 +102,9 @@ const CreateNoteForm = () => {
         <div>
           <strong>Выбранные теги:</strong>
           {selectedTags.map(tag => (
-            <span key={tag.id} style={{ marginRight: '0.5rem' }}>{tag.title}</span>
+            <span key={tag.id} className={styles.tag}>
+              {tag.title}
+            </span>
           ))}
         </div>
       </div>

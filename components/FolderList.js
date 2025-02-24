@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNotes } from '@/context/NotesContext';
 import styles from '@/app/page.module.css'; // Импорт стилей
 
@@ -29,6 +29,35 @@ const FolderList = () => {
     saveEditing,
     notes,
   } = useNotes();
+
+  // Состояние для содержимого заметки
+  const [newNoteContent, setNewNoteContent] = useState('');
+
+  // Состояние для раскрытой заметки
+  const [expandedNoteId, setExpandedNoteId] = useState(null);
+
+  // Обработчик добавления заметки в папку
+  const handleAddNoteToFolder = (folderId) => {
+    if (!newNoteTitle.trim()) {
+      alert('Название заметки не может быть пустым');
+      return;
+    }
+
+    const newNote = {
+      title: newNoteTitle,
+      content: newNoteContent, // Добавляем содержимое заметки
+      folderId: folderId,
+    };
+
+    addNoteToFolder(folderId, newNote); // Передаем новую заметку в функцию
+    setNewNoteTitle(''); // Очищаем поле названия
+    setNewNoteContent(''); // Очищаем поле содержимого
+  };
+
+  // Обработчик раскрытия/скрытия содержимого заметки
+  const toggleNoteContent = (noteId) => {
+    setExpandedNoteId((prevId) => (prevId === noteId ? null : noteId));
+  };
 
   return (
     <div className={styles.sidebar}>
@@ -103,8 +132,14 @@ const FolderList = () => {
                 placeholder="Название заметки"
                 className={styles.input}
               />
+              <textarea
+                value={newNoteContent}
+                onChange={(e) => setNewNoteContent(e.target.value)}
+                placeholder="Содержание заметки"
+                className={styles.textarea}
+              />
               <button
-                onClick={() => addNoteToFolder(folder.id)}
+                onClick={() => handleAddNoteToFolder(folder.id)}
                 className={styles.button}
               >
                 Добавить заметку
@@ -116,15 +151,36 @@ const FolderList = () => {
                 if (!note) return null;
                 return (
                   <div key={note.id} className={styles.note}>
-                    {editingNoteId === note.id ? (
-                      <input
-                        type="text"
-                        value={editedName}
-                        onChange={(e) => setEditedName(e.target.value)}
-                        className={styles.input}
-                      />
-                    ) : (
-                      <span>{note.title}</span>
+                    <div
+                      onClick={() => toggleNoteContent(note.id)}
+                      className={styles.noteHeader}
+                    >
+                      {editingNoteId === note.id ? (
+                        <input
+                          type="text"
+                          value={editedName}
+                          onChange={(e) => setEditedName(e.target.value)}
+                          className={styles.input}
+                        />
+                      ) : (
+                        <span>{note.title}</span>
+                      )}
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation(); // Предотвращаем всплытие события
+                          toggleNoteContent(note.id);
+                        }}
+                        className={styles.toggleButton}
+                      >
+                        {expandedNoteId === note.id ? 'Скрыть' : 'Показать'}
+                      </button>
+                    </div>
+
+                    {/* Отображение содержимого заметки, если она раскрыта */}
+                    {expandedNoteId === note.id && (
+                      <div className={styles.noteContent}>
+                        <p>{note.content}</p>
+                      </div>
                     )}
 
                     <div className={styles.noteActions}>

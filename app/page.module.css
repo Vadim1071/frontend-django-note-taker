@@ -2,10 +2,10 @@
 :root {
   --background-color: #1f2937;
   --text-color: #ffffff;
-  --primary-color: #3b82f6;
-  --secondary-color: #facc15;
-  --danger-color: #ef4444;
-  --success-color: #22c55e;
+  --primary-color: #3b82f6; /* Синий */
+  --secondary-color: #f59e0b; /* Оранжевый */
+  --danger-color: #ef4444; /* Красный */
+  --success-color: #10b981; /* Зеленый */
   --border-color: #4b5563;
   --shadow-color: rgba(0, 0, 0, 0.2);
 }
@@ -20,8 +20,8 @@ body {
 
 .container {
   display: flex;
-  justify-content: flex-start; /* Выравниваем по левому краю */
-  align-items: flex-start; /* Выравниваем по верхнему краю */
+  justify-content: flex-start;
+  align-items: flex-start;
   min-height: 100vh;
   padding: 2rem;
 }
@@ -37,10 +37,11 @@ body {
 }
 
 .sidebar {
-  width: 300px; /* Расширяем сайдбар */
+  width: 300px;
   background-color: #111827;
-  padding: 1rem;
+  padding: 1rem 1rem 1rem 0.5rem; /* Уменьшаем отступ слева до 0.5rem */
   border-right: 1px solid var(--border-color);
+  overflow: auto;
 }
 
 .main {
@@ -68,7 +69,7 @@ body {
 .folderActions {
   margin-left: 1rem;
   display: flex;
-  gap: 0.5rem; /* Добавляем отступ между кнопками */
+  gap: 0.5rem;
 }
 
 .note {
@@ -80,54 +81,64 @@ body {
   background-color: #1f2937;
   border-radius: 0.25rem;
   border: 1px solid var(--border-color);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .note span {
   flex: 1;
   margin-right: 0.5rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .noteActions {
   display: flex;
-  gap: 0.5rem; /* Добавляем отступ между кнопками */
+  gap: 0.25rem;
+  flex-shrink: 0;
 }
 
 .input {
   width: 100%;
   padding: 0.5rem;
-  borderRadius: 0.25rem;
+  border-radius: 0.25rem;
   border: 1px solid var(--border-color);
-  fontSize: 0.875rem;
-  marginBottom: 0.5rem; /* Добавляем отступ под полем ввода */
+  font-size: 0.875rem;
+  margin-bottom: 0.5rem;
   background-color: #374151;
   color: var(--text-color);
 }
 
 .button {
-  padding: 0.25rem 0.75rem;
+  padding: 0.2rem 0.5rem;
   background: var(--danger-color);
-  color: var(--text-color);
+  color: #ffffff; /* Белый текст для контраста */
   border: none;
   border-radius: 0.25rem;
   cursor: pointer;
-  font-size: 0.875rem;
-  boxShadow: 0 1px 2px 0 var(--shadow-color);
-  margin-right: 0.5rem; /* Добавляем отступ справа между кнопками */
+  font-size: 0.75rem;
+  box-shadow: 0 1px 2px 0 var(--shadow-color);
+  transition: background-color 0.2s ease; /* Плавное изменение цвета */
+}
+
+.button:hover {
+  opacity: 0.9; /* Легкое затемнение при наведении */
 }
 
 .button.edit {
   background: var(--secondary-color);
-  color: #000; /* Черный текст для контрастности */
+  color: #000000; /* Черный текст для контраста */
 }
 
 .button.save {
   background: var(--success-color);
-  color: #000; /* Черный текст для контрастности */
+  color: #000000; /* Черный текст для контраста */
 }
 
 .button.add {
   background: var(--primary-color);
-  color: #000; /* Черный текст для контрастности */
+  color: #ffffff; /* Белый текст для контраста */
 }
 
 .folderListTitle {
@@ -136,4 +147,45 @@ body {
 
 .noteListTitle {
   margin-bottom: 1rem;
+}
+
+/* Адаптивная верстка */
+@media (max-width: 768px) {
+  .container {
+    padding: 1rem;
+  }
+
+  .content {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border-color);
+    padding: 1rem; /* Возвращаем стандартные отступы на мобильных устройствах */
+  }
+
+  .main {
+    padding: 1rem 0;
+  }
+
+  .folderHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .folderActions {
+    margin-left: 0;
+    margin-top: 0.5rem;
+  }
+
+  .note {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .noteActions {
+    margin-top: 0.5rem;
+  }
 }
