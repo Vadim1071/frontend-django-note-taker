@@ -5,136 +5,94 @@ const NotesContext = createContext();
 export const useNotes = () => useContext(NotesContext);
 
 export const NotesProvider = ({ children }) => {
-  const [folders, setFolders] = useState(() => {
-    const savedFolders = localStorage.getItem('folders');
-    return savedFolders ? JSON.parse(savedFolders) : [];
-  });
+  const [folders, setFolders] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [tags, setTags] = useState([]);
 
-  const [notes, setNotes] = useState(() => {
-    const savedNotes = localStorage.getItem('notes');
-    return savedNotes ? JSON.parse(savedNotes) : [];
-  });
+  // Загрузка данных из localStorage
+  useEffect(() => {
+    const savedFolders = JSON.parse(localStorage.getItem('folders')) || [];
+    const savedNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    const savedTags = JSON.parse(localStorage.getItem('tags')) || [];
+    setFolders(savedFolders);
+    setNotes(savedNotes);
+    setTags(savedTags);
+  }, []);
 
+  // Сохранение данных в localStorage
   useEffect(() => {
     localStorage.setItem('folders', JSON.stringify(folders));
-  }, [folders]);
-
-  useEffect(() => {
     localStorage.setItem('notes', JSON.stringify(notes));
-  }, [notes]);
+    localStorage.setItem('tags', JSON.stringify(tags));
+  }, [folders, notes, tags]);
 
-  const [openFolderId, setOpenFolderId] = useState(null);
-  const [newFolderName, setNewFolderName] = useState('');
-  const [newNoteTitle, setNewNoteTitle] = useState('');
-  const [editingFolderId, setEditingFolderId] = useState(null);
-  const [editingNoteId, setEditingNoteId] = useState(null);
-  const [editedName, setEditedName] = useState('');
-
-  const toggleFolder = (folderId) => {
-    setOpenFolderId(openFolderId === folderId ? null : folderId);
+  // Добавление папки
+  const addFolder = (name) => {
+    const newFolder = { id: Date.now(), name, notes: [] };
+    setFolders([...folders, newFolder]);
   };
 
-  const addFolder = () => {
-    const trimmedName = newFolderName.trim();
-    if (trimmedName) {
-      const newFolder = {
-        id: Date.now(),
-        name: trimmedName,
-        notes: [],
-      };
-      setFolders([...folders, newFolder]);
-      setNewFolderName('');
-    }
-  };
-
-  const addNoteToFolder = (folderId) => {
-    if (newNoteTitle.trim()) {
-      const newNote = {
-        id: Date.now(),
-        title: newNoteTitle,
-        folderId: folderId,
-      };
-      setNotes([...notes, newNote]);
-      // Обновляем массив notes в соответствующей папке
-      const updatedFolders = folders.map((folder) =>
-        folder.id === folderId ? { ...folder, notes: [...folder.notes, newNote.id] } : folder
-      );
-      setFolders(updatedFolders);
-      setNewNoteTitle('');
-    }
-  };
-
+  // Удаление папки
   const deleteFolder = (folderId) => {
-    const updatedFolders = folders.filter((folder) => folder.id !== folderId);
-    const updatedNotes = notes.filter((note) => note.folderId !== folderId);
-    setFolders(updatedFolders);
-    setNotes(updatedNotes);
+    setFolders(folders.filter((folder) => folder.id !== folderId));
   };
 
+  // Добавление заметки
+  const addNote = (note) => {
+    const newNote = { ...note, id: Date.now() };
+    setNotes([...notes, newNote]);
+  };
+
+  // Удаление заметки
   const deleteNote = (noteId) => {
-    const updatedNotes = notes.filter((note) => note.id !== noteId);
-    const updatedFolders = folders.map((folder) => ({
-      ...folder,
-      notes: folder.notes.filter((id) => id !== noteId),
-    }));
-    setNotes(updatedNotes);
-    setFolders(updatedFolders);
+    setNotes(notes.filter((note) => note.id !== noteId));
   };
 
-  const startEditingFolder = (folderId, currentName) => {
-    setEditingFolderId(folderId);
-    setEditedName(currentName);
+  // Добавление тега
+  const addTag = (tag) => {
+    const newTag = { ...tag, id: Date.now() };
+    setTags([...tags, newTag]);
   };
 
-  const startEditingNote = (noteId, currentTitle) => {
-    setEditingNoteId(noteId);
-    setEditedName(currentTitle);
+  // Удаление тега
+  const deleteTag = (tagId) => {
+    setTags(tags.filter((tag) => tag.id !== tagId));
   };
 
-  const saveEditing = (folderId, noteId = null) => {
-    if (noteId) {
-      const updatedNotes = notes.map((note) =>
-        note.id === noteId ? { ...note, title: editedName } : note
-      );
-      setNotes(updatedNotes);
-    } else {
-      const updatedFolders = folders.map((folder) =>
-        folder.id === folderId ? { ...folder, name: editedName } : folder
-      );
-      setFolders(updatedFolders);
+  // Добавление заметки в папку
+  const addNoteToFolder = (folderId, note) => {
+    const folderIdNumber = Number(folderId);
+    const folderExists = folders.some((folder) => folder.id === folderIdNumber);
+    if (!folderExists) {
+      console.error('Папка не существует:', folderIdNumber);
+      return;
     }
-    setEditingFolderId(null);
-    setEditingNoteId(null);
-    setEditedName('');
+
+    const newNote = { ...note, id: Date.now(), folderId: folderIdNumber };
+    setNotes([...notes, newNote]);
+
+    setFolders(
+      folders.map((folder) =>
+        folder.id === folderIdNumber
+          ? { ...folder, notes: [...folder.notes, newNote.id] }
+          : folder
+      )
+    );
   };
 
   return (
     <NotesContext.Provider
       value={{
         folders,
-        setFolders,
-        openFolderId,
-        setOpenFolderId,
-        newFolderName,
-        setNewFolderName,
-        newNoteTitle,
-        setNewNoteTitle,
-        editingFolderId,
-        setEditingFolderId,
-        editingNoteId,
-        setEditingNoteId,
-        editedName,
-        setEditedName,
-        toggleFolder,
-        addFolder,
-        addNoteToFolder,
-        deleteFolder,
-        deleteNote,
-        startEditingFolder,
-        startEditingNote,
-        saveEditing,
         notes,
-        setNotes,
+        tags,
+        addFolder,
+        deleteFolder,
+        addNote,
+        deleteNote,
+        addTag,
+        deleteTag,
+        addNoteToFolder,
       }}
     >
       {children}

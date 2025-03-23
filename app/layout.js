@@ -1,6 +1,6 @@
 'use client';
-import './globals.css'; // Импорт глобальных стилей
-import { NotesProvider } from '@/context/NotesContext'; // Импорт NotesProvider
+import './globals.css';
+import { NotesProvider } from '@/context/NotesContext';
 
 export default function RootLayout({ children }) {
   return (

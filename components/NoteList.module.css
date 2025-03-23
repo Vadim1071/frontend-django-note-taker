@@ -1,0 +1,107 @@
+.notesSection {
+    background-color: var(--sidebar-background);
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 1.5rem;
+  }
+  
+  .note {
+    background-color: var(--background-color);
+    border-radius: 0.375rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  }
+  
+  .note h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--heading-color);
+  }
+  
+  .note .tag {
+    display: inline-block;
+    background-color: var(--button-background);
+    color: var(--button-text);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* Стили для Markdown */
+  .react-markdown h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin: 1rem 0;
+  }
+  
+  .react-markdown h2 {
+    font-size: 1.75rem;
+    font-weight: bold;
+    margin: 0.875rem 0;
+  }
+  
+  .react-markdown h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0.75rem 0;
+  }
+  
+  .react-markdown p {
+    margin: 0.5rem 0;
+    line-height: 1.5;
+  }
+  
+  .react-markdown ul {
+    margin: 0.5rem 0;
+    padding-left: 1.5rem;
+  }
+  
+  .react-markdown li {
+    margin: 0.25rem 0;
+  }
+  
+  .react-markdown strong {
+    font-weight: bold;
+  }
+  
+  .react-markdown em {
+    font-style: italic;
+  }
+  
+  .react-markdown a {
+    color: var(--button-background);
+    text-decoration: underline;
+  }
+  
+  .react-markdown code {
+    background-color: var(--input-background);
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-family: monospace;
+  }
+  
+  .react-markdown pre {
+    background-color: var(--input-background);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+  }
+
+  .deleteButton {
+    background-color: #ef4444; /* Красный цвет */
+    color: #ffffff;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+  }
+  
+  .deleteButton:hover {
+    background-color: #dc2626; /* Темно-красный при наведении */
+  }

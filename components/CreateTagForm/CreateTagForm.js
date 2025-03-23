@@ -1,37 +1,54 @@
-'use client';
-import React, { useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const CreateTagForm = ({ onSubmit, onCancel }) => {
-  const [title, setTitle] = useState('');
+const NotesContext = createContext();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit({ title }); // Передаем новый тег в родительский компонент
-    setTitle('');
+export const useNotes = () => useContext(NotesContext);
+
+export const NotesProvider = ({ children }) => {
+  const [folders, setFolders] = useState([]);
+  const [notes, setNotes] = useState([]);
+  const [tags, setTags] = useState([]);
+
+  // Загрузка данных из localStorage
+  useEffect(() => {
+    const savedFolders = JSON.parse(localStorage.getItem('folders')) || [];
+    const savedNotes = JSON.parse(localStorage.getItem('notes')) || [];
+    const savedTags = JSON.parse(localStorage.getItem('tags')) || [];
+    setFolders(savedFolders);
+    setNotes(savedNotes);
+    setTags(savedTags);
+  }, []);
+
+  // Сохранение данных в localStorage
+  useEffect(() => {
+    localStorage.setItem('folders', JSON.stringify(folders));
+    localStorage.setItem('notes', JSON.stringify(notes));
+    localStorage.setItem('tags', JSON.stringify(tags));
+  }, [folders, notes, tags]);
+
+  // Добавление тега
+  const addTag = (tag) => {
+    const newTag = { ...tag, id: Date.now() };
+    setTags([...tags, newTag]);
+  };
+
+  // Удаление тега
+  const deleteTag = (tagId) => {
+    setTags(tags.filter((tag) => tag.id !== tagId));
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ marginTop: '1rem' }}>
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Название тега"
-        required
-        style={{ padding: '0.5rem', border: '1px solid #d1d5db', borderRadius: '0.25rem' }}
-      />
-      <button type="submit" style={{ marginLeft: '0.5rem', padding: '0.5rem 1rem', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '0.25rem' }}>
-        Создать
-      </button>
-      <button
-        type="button"
-        onClick={onCancel}
-        style={{ marginLeft: '0.5rem', padding: '0.5rem 1rem', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '0.25rem' }}
-      >
-        Отмена
-      </button>
-    </form>
+    <NotesContext.Provider
+      value={{
+        folders,
+        notes,
+        tags,
+        addTag,
+        deleteTag,
+        // Другие функции...
+      }}
+    >
+      {children}
+    </NotesContext.Provider>
   );
 };
-
-export default CreateTagForm;

@@ -1,191 +1,23 @@
-/* app/page.module.css */
-:root {
-  --background-color: #1f2937;
-  --text-color: #ffffff;
-  --primary-color: #3b82f6; /* Синий */
-  --secondary-color: #f59e0b; /* Оранжевый */
-  --danger-color: #ef4444; /* Красный */
-  --success-color: #10b981; /* Зеленый */
-  --border-color: #4b5563;
-  --shadow-color: rgba(0, 0, 0, 0.2);
-}
-
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: var(--background-color);
-  color: var(--text-color);
-}
-
 .container {
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  gap: 1.5rem;
+  padding: 1.5rem;
+  background-color: var(--background-color);
   min-height: 100vh;
-  padding: 2rem;
-}
-
-.content {
-  display: flex;
-  width: 100%;
-  max-width: 1200px;
-  background-color: #111827;
-  box-shadow: 0 0 10px var(--shadow-color);
-  border-radius: 0.5rem;
-  overflow: hidden;
+  color: var(--text-color);
 }
 
 .sidebar {
   width: 300px;
-  background-color: #111827;
-  padding: 1rem 1rem 1rem 0.5rem; /* Уменьшаем отступ слева до 0.5rem */
-  border-right: 1px solid var(--border-color);
-  overflow: auto;
+  background-color: var(--sidebar-background);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .main {
   flex: 1;
-  padding: 1rem;
-}
-
-.folder {
-  margin-bottom: 0.5rem;
-}
-
-.folderHeader {
-  cursor: pointer;
-  font-weight: bold;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.25rem 0;
-}
-
-.folderHeader:hover {
-  background-color: #374151;
-}
-
-.folderActions {
-  margin-left: 1rem;
-  display: flex;
-  gap: 0.5rem;
-}
-
-.note {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.5rem;
-  padding: 0.5rem;
-  background-color: #1f2937;
-  border-radius: 0.25rem;
-  border: 1px solid var(--border-color);
-  max-width: 100%;
-  overflow: hidden;
-}
-
-.note span {
-  flex: 1;
-  margin-right: 0.5rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.noteActions {
-  display: flex;
-  gap: 0.25rem;
-  flex-shrink: 0;
-}
-
-.input {
-  width: 100%;
-  padding: 0.5rem;
-  border-radius: 0.25rem;
-  border: 1px solid var(--border-color);
-  font-size: 0.875rem;
-  margin-bottom: 0.5rem;
-  background-color: #374151;
-  color: var(--text-color);
-}
-
-.button {
-  padding: 0.2rem 0.5rem;
-  background: var(--danger-color);
-  color: #ffffff; /* Белый текст для контраста */
-  border: none;
-  border-radius: 0.25rem;
-  cursor: pointer;
-  font-size: 0.75rem;
-  box-shadow: 0 1px 2px 0 var(--shadow-color);
-  transition: background-color 0.2s ease; /* Плавное изменение цвета */
-}
-
-.button:hover {
-  opacity: 0.9; /* Легкое затемнение при наведении */
-}
-
-.button.edit {
-  background: var(--secondary-color);
-  color: #000000; /* Черный текст для контраста */
-}
-
-.button.save {
-  background: var(--success-color);
-  color: #000000; /* Черный текст для контраста */
-}
-
-.button.add {
-  background: var(--primary-color);
-  color: #ffffff; /* Белый текст для контраста */
-}
-
-.folderListTitle {
-  margin-bottom: 1rem;
-}
-
-.noteListTitle {
-  margin-bottom: 1rem;
-}
-
-/* Адаптивная верстка */
-@media (max-width: 768px) {
-  .container {
-    padding: 1rem;
-  }
-
-  .content {
-    flex-direction: column;
-  }
-
-  .sidebar {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid var(--border-color);
-    padding: 1rem; /* Возвращаем стандартные отступы на мобильных устройствах */
-  }
-
-  .main {
-    padding: 1rem 0;
-  }
-
-  .folderHeader {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .folderActions {
-    margin-left: 0;
-    margin-top: 0.5rem;
-  }
-
-  .note {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .noteActions {
-    margin-top: 0.5rem;
-  }
+  flex-direction: column;
+  gap: 1.5rem;
 }

@@ -1,117 +1,110 @@
 'use client';
-import React, { useState, useEffect } from 'react';
-import TagSelector from '../TagSelector';
-import { createNote, getTags, createTag } from '../../logic/api/api';
+import React, { useState } from 'react';
+import { useNotes } from '@/context/NotesContext';
 import styles from './CreateNoteForm.module.css';
 
 const CreateNoteForm = () => {
+  const { folders, tags, addNoteToFolder, addNote, addTag } = useNotes();
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [selectedTags, setSelectedTags] = useState([]);
-  const [tags, setTags] = useState([]);
+  const [selectedFolderId, setSelectedFolderId] = useState(null);
+  const [selectedTagId, setSelectedTagId] = useState(null);
+  const [newTagName, setNewTagName] = useState('');
   const [error, setError] = useState('');
 
-  // Загружаем теги с сервера
-  useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const response = await getTags();
-        console.log('Ответ от getTags:', response);
-
-        if (Array.isArray(response)) {
-          setTags(response);
-        } else {
-          console.error('Ожидался массив тегов, но получено:', response);
-          setTags([]);
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке тегов:', error);
-        setTags([]);
-      }
-    };
-
-    fetchTags();
-  }, []);
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const tagIds = selectedTags.map(tag => tag.id);
-    const newNote = { title, content, tags: tagIds };
-
-    console.log('Отправляемые данные:', newNote);
-
-    try {
-      await createNote(newNote);
-      alert('Заметка создана!');
-      setTitle('');
-      setContent('');
-      setSelectedTags([]);
-    } catch (err) {
-      setError('Не удалось создать заметку. Пожалуйста, попробуйте снова.');
-      console.error('Ошибка при создании заметки:', err);
+    if (!title || !content) {
+      setError('Заголовок и содержание заметки обязательны');
+      return;
     }
+
+    const newNote = { title, content, tagId: selectedTagId };
+
+    if (selectedFolderId) {
+      addNoteToFolder(selectedFolderId, newNote);
+    } else {
+      addNote(newNote);
+    }
+
+    setTitle('');
+    setContent('');
+    setSelectedFolderId(null);
+    setSelectedTagId(null);
+    setError('');
   };
 
-  const handleTagAdd = (tag) => {
-    setSelectedTags((prevTags) => [...prevTags, tag]);
-  };
-
-  const handleNewTagCreate = async (newTag) => {
-    try {
-      const response = await createTag(newTag);
-      const createdTag = response;
-
-      setTags((prevTags) => [...prevTags, createdTag]);
-      setSelectedTags((prevSelectedTags) => [...prevSelectedTags, createdTag]);
-    } catch (error) {
-      console.error('Ошибка при создании тега:', error);
-      setError('Не удалось создать тег. Пожалуйста, попробуйте снова.');
+  const handleAddTag = () => {
+    if (newTagName.trim()) {
+      addTag({ title: newTagName });
+      setNewTagName('');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className={styles.form}>
+    <div className={styles.form}>
       <h2>Создать заметку</h2>
       {error && <p className={styles.error}>{error}</p>}
-      <div>
-        <label>Заголовок:</label>
+      <input
+        type="text"
+        placeholder="Заголовок"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className={styles.input}
+      />
+      <textarea
+        placeholder="Содержание (поддерживается Markdown)"
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
+        className={styles.textarea}
+      />
+
+      {/* Выпадающий список для папок */}
+      <div className={styles.selectContainer}>
+        <select
+          value={selectedFolderId || ''}
+          onChange={(e) => setSelectedFolderId(e.target.value || null)}
+          className={styles.select}
+        >
+          <option value="">Без папки</option>
+          {folders.map((folder) => (
+            <option key={folder.id} value={folder.id}>
+              {folder.name}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Выпадающий список для тегов */}
+      <div className={styles.selectContainer}>
+        <select
+          value={selectedTagId || ''}
+          onChange={(e) => setSelectedTagId(e.target.value || null)}
+          className={styles.select}
+        >
+          <option value="">Без тега</option>
+          {tags.map((tag) => (
+            <option key={tag.id} value={tag.id}>
+              {tag.title}
+            </option>
+          ))}
+        </select>
         <input
           type="text"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          required
-          className={styles.input}
+          placeholder="Новый тег"
+          value={newTagName}
+          onChange={(e) => setNewTagName(e.target.value)}
+          className={styles.tagInput}
         />
+        <button onClick={handleAddTag} className={styles.addTagButton}>
+          +
+        </button>
       </div>
-      <div>
-        <label>Содержание:</label>
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          required
-          className={styles.textarea}
-        />
-      </div>
-      <div>
-        <label>Теги:</label>
-        <TagSelector
-          tags={tags}
-          onTagAdd={handleTagAdd}
-          onNewTagCreate={handleNewTagCreate}
-        />
-        <div>
-          <strong>Выбранные теги:</strong>
-          {selectedTags.map(tag => (
-            <span key={tag.id} className={styles.tag}>
-              {tag.title}
-            </span>
-          ))}
-        </div>
-      </div>
-      <button type="submit" className={styles.button}>
+
+      <button onClick={handleSubmit} className={styles.button}>
         Сохранить
       </button>
-    </form>
+    </div>
   );
 };
 
